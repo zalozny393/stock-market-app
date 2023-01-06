@@ -1,0 +1,26 @@
+{
+  "name": "stock-market-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zalozny393/stock-market-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zalozny393/stock-market-app/issues"
+  },
+  "homepage": "https://github.com/zalozny393/stock-market-app#readme",
+  "devDependencies": {
+    "cfn-resolver-lib": "^1.1.7",
+    "serverless-appsync-plugin": "^1.14.0",
+    "serverless-appsync-simulator": "^0.20.0",
+    "serverless-offline": "^12.0.4",
+    "serverless-python-requirements": "^6.0.0"
+  }
+}

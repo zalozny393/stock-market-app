@@ -1,0 +1,38 @@
+service: stock-market-app
+frameworkVersion: '3'
+
+plugins:
+  - serverless-appsync-plugin
+  - serverless-appsync-simulator
+  - serverless-offline
+  - serverless-python-requirements
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.9
+  environment:
+    LOCAL_DEBUG: ${param:local_debug, 'false'}
+
+custom:      
+  appSync:
+    name: ${self:service}-${sls:stage}
+    authenticationType: API_KEY
+    mappingTemplates:
+      - type: Query
+        field: getStock
+        dataSource: getStock
+        request: false
+        response: false
+    dataSources:
+      - type: AWS_LAMBDA
+        name: getStock
+        config:
+          functionName: getStock
+  appsync-simulator:
+    apiKey: 'da2-fakeApiId123456'
+
+functions:
+  getStock:
+    handler: handler.get_stock

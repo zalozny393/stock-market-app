@@ -1,0 +1,11 @@
+schema {
+    query: Query
+}
+
+type Query {
+    getStock(symbol: String!): Stock!
+}
+
+type Stock {
+    symbol: String!
+}
