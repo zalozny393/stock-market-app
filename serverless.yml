@@ -15,7 +15,12 @@ provider:
   environment:
     LOCAL_DEBUG: ${param:local_debug, 'false'}
 
-custom:      
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    useStaticCache: false
+    slim: true
+    layer: true
   appSync:
     name: ${self:service}-${sls:stage}
     authenticationType: API_KEY
@@ -33,6 +38,17 @@ custom:
   appsync-simulator:
     apiKey: 'da2-fakeApiId123456'
 
+	
+package:
+  individually: false
+  include:
+    - '!./**'
+    - './src/**'
+  exclude:
+    - '**'
+
 functions:
   getStockInfo:
-    handler: handler.get_stock_info
+    handler: src/handler.get_stock_info
+    layers:
+      - Ref: PythonRequirementsLambdaLayer
