@@ -3,9 +3,19 @@ schema {
 }
 
 type Query {
-    getStock(symbol: String!): Stock!
+    getStockInfo(symbol: String!): StockInfo!
 }
 
-type Stock {
+type StockInfo {
     symbol: String!
+    longName: String!
+    longBusinessSummary: String
+    currentPrice: Float!
+    currency: String!
+    beta: Float!
+    sector: String
+    forwardPE: Float
+    trailingPE: Float
+    fiveYearAvgDividendYield: Float
+    logo_url: String
 }

@@ -21,18 +21,18 @@ custom:
     authenticationType: API_KEY
     mappingTemplates:
       - type: Query
-        field: getStock
-        dataSource: getStock
+        field: getStockInfo
+        dataSource: getStockInfo
         request: false
         response: false
     dataSources:
       - type: AWS_LAMBDA
-        name: getStock
+        name: getStockInfo
         config:
-          functionName: getStock
+          functionName: getStockInfo
   appsync-simulator:
     apiKey: 'da2-fakeApiId123456'
 
 functions:
-  getStock:
-    handler: handler.get_stock
+  getStockInfo:
+    handler: handler.get_stock_info
