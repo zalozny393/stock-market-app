@@ -24,6 +24,9 @@ custom:
   appSync:
     name: ${self:service}-${sls:stage}
     authenticationType: API_KEY
+    apiKeys:
+      - name: ui keys
+        expiresAfter: 365d 
     mappingTemplates:
       - type: Query
         field: getStockInfo
