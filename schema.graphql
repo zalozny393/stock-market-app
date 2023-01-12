@@ -4,9 +4,11 @@ schema {
 
 type Query {
     getStockInfo(symbols: [String!]!): [StockInfo!]!
+    @aws_cognito_user_pools
+    @aws_api_key
 }
 
-type StockInfo {
+type StockInfo @aws_cognito_user_pools @aws_api_key{
     symbol: String!
     longName: String!
     longBusinessSummary: String

@@ -26,7 +26,11 @@ custom:
     authenticationType: API_KEY
     apiKeys:
       - name: ui keys
-        expiresAfter: 365d 
+        expiresAfter: 365d
+    additionalAuthenticationProviders:
+      - authenticationType: AMAZON_COGNITO_USER_POOLS
+        userPoolConfig:
+          userPoolId: !Ref CognitoUserPool
     mappingTemplates:
       - type: Query
         field: getStockInfo
@@ -52,3 +56,17 @@ functions:
     handler: src/handler.get_stock_info
     layers:
       - Ref: PythonRequirementsLambdaLayer
+
+resources:
+  Resources:
+    CognitoUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        UsernameAttributes:
+          - "email"
+        UserPoolName: ${self:service}-${sls:stage}
+    CognitoUserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: "web"
+        UserPoolId: !Ref CognitoUserPool
