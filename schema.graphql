@@ -3,12 +3,21 @@ schema {
 }
 
 type Query {
-    getStockInfo(symbols: [String!]!): [StockInfo!]!
+    search(searchText: String!): [SearchResult!]!
+    getStockOverview(symbols: [String!]!): [StockOverview!]!
     @aws_cognito_user_pools
     @aws_api_key
 }
 
-type StockInfo @aws_cognito_user_pools @aws_api_key{
+type SearchResult @aws_cognito_user_pools @aws_api_key{
+    symbol: String!
+    name: String!
+    type: String!
+    region: String!
+    currency: String!
+}
+
+type StockOverview @aws_cognito_user_pools @aws_api_key{
     symbol: String!
     longName: String!
     longBusinessSummary: String

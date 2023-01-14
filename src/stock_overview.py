@@ -9,7 +9,7 @@ if os.environ.get("IS_OFFLINE") == "true" and os.environ.get("LOCAL_DEBUG") == "
     debugpy.wait_for_client()
 
 
-def get_stock_info(event, context):
+def handle_request(event, context):
     symbols = " ".join(event["arguments"]["symbols"])
     tickers = yf.Tickers(symbols)
 

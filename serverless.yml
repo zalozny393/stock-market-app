@@ -33,15 +33,24 @@ custom:
           userPoolId: !Ref CognitoUserPool
     mappingTemplates:
       - type: Query
-        field: getStockInfo
-        dataSource: getStockInfo
+        field: search
+        dataSource: search
+        request: false
+        response: false
+      - type: Query
+        field: getStockOverview
+        dataSource: getStockOverview
         request: false
         response: false
     dataSources:
       - type: AWS_LAMBDA
-        name: getStockInfo
+        name: search
         config:
-          functionName: getStockInfo
+          functionName: search
+      - type: AWS_LAMBDA
+        name: getStockOverview
+        config:
+          functionName: getStockOverview
   appsync-simulator:
     apiKey: 'da2-fakeApiId123456'
 	
@@ -52,10 +61,12 @@ package:
     - './src/**'
 
 functions:
-  getStockInfo:
-    handler: src/handler.get_stock_info
+  getStockOverview:
+    handler: src/stock_overview.handle_request
     layers:
       - Ref: PythonRequirementsLambdaLayer
+  search:
+    handler: src/search.handle_request
 
 resources:
   Resources:
