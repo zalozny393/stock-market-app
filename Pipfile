@@ -4,11 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-yfinance = "*"
+alpha-vantage = "*"
 
 [dev-packages]
 black = "*"
 debugpy = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.9"

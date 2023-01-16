@@ -1,6 +1,6 @@
 import os
-import yfinance as yf
 
+from alpha_vantage.fundamentaldata import FundamentalData
 
 if os.environ.get("IS_OFFLINE") == "true" and os.environ.get("LOCAL_DEBUG") == "true":
     import debugpy
@@ -10,26 +10,24 @@ if os.environ.get("IS_OFFLINE") == "true" and os.environ.get("LOCAL_DEBUG") == "
 
 
 def handle_request(event, context):
-    symbols = " ".join(event["arguments"]["symbols"])
-    tickers = yf.Tickers(symbols)
+    try:
+        result = FundamentalData(
+            key=os.environ.get("ALPHAVANTAGE_API_KEY")
+        ).get_company_overview(symbol=event["arguments"]["symbol"])
+        data = result[0]
+    except (ValueError, IndexError):
+        return
 
-    stocks_info = []
-    for symbol, ticker in tickers.tickers.items():
-        if not ticker.info:
-            continue
-        stocks_info.append(
-            {
-                "symbol": symbol,
-                "currentPrice": ticker.info["currentPrice"],
-                "currency": ticker.info["financialCurrency"],
-                "beta": ticker.info["beta"],
-                "sector": ticker.info["sector"],
-                "longBusinessSummary": ticker.info["longBusinessSummary"],
-                "longName": ticker.info["longName"],
-                "forwardPE": ticker.info["forwardPE"],
-                "trailingPE": ticker.info["trailingPE"],
-                "fiveYearAvgDividendYield": ticker.info["fiveYearAvgDividendYield"],
-                "logo_url": ticker.info["logo_url"],
-            }
-        )
-    return stocks_info
+    return {
+        "symbol": data["Symbol"],
+        "name": data["Name"],
+        "description": data["Description"],
+        "currency": data["Currency"],
+        "sector": data["Sector"],
+        "PERatio": data["PERatio"],
+        "profitMargin": data["ProfitMargin"],
+        "High52Week": data["52WeekHigh"],
+        "Low52Week": data["52WeekLow"],
+        "Moving200DayAverage": data["200DayMovingAverage"],
+        "beta": data["Beta"],
+    }

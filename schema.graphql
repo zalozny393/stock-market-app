@@ -4,7 +4,7 @@ schema {
 
 type Query {
     search(searchText: String!): [SearchResult!]!
-    getStockOverview(symbols: [String!]!): [StockOverview!]!
+    getStockOverview(symbol: String!): StockOverview!
     @aws_cognito_user_pools
     @aws_api_key
 }
@@ -19,14 +19,14 @@ type SearchResult @aws_cognito_user_pools @aws_api_key{
 
 type StockOverview @aws_cognito_user_pools @aws_api_key{
     symbol: String!
-    longName: String!
-    longBusinessSummary: String
-    currentPrice: Float!
+    name: String!
+    description: String!
     currency: String!
     beta: Float!
-    sector: String
-    forwardPE: Float
-    trailingPE: Float
-    fiveYearAvgDividendYield: Float
-    logo_url: String
+    sector: String!
+    PERatio: Float!
+    profitMargin: Float!
+    High52Week: Float!
+    Low52Week: Float!
+    Moving200DayAverage: Float!
 }

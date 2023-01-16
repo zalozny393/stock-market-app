@@ -13,44 +13,17 @@ provider:
   name: aws
   runtime: python3.9
   environment:
-    LOCAL_DEBUG: ${param:local_debug, 'false'}
+    LOCAL_DEBUG: ${strToBool(${param:local_debug, 'false'})}
+    ALPHAVANTAGE_API_KEY: ${env:ALPHAVANTAGE_API_KEY}
 
 custom:
+  pandasLambdaLayerMap:
+    # Add a new reference if deploy in non us-east-1 region
+    us-east-1: arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python39:3
   pythonRequirements:
-    dockerizePip: true
-    useStaticCache: false
     slim: true
     layer: true
-  appSync:
-    name: ${self:service}-${sls:stage}
-    authenticationType: API_KEY
-    apiKeys:
-      - name: ui keys
-        expiresAfter: 365d
-    additionalAuthenticationProviders:
-      - authenticationType: AMAZON_COGNITO_USER_POOLS
-        userPoolConfig:
-          userPoolId: !Ref CognitoUserPool
-    mappingTemplates:
-      - type: Query
-        field: search
-        dataSource: search
-        request: false
-        response: false
-      - type: Query
-        field: getStockOverview
-        dataSource: getStockOverview
-        request: false
-        response: false
-    dataSources:
-      - type: AWS_LAMBDA
-        name: search
-        config:
-          functionName: search
-      - type: AWS_LAMBDA
-        name: getStockOverview
-        config:
-          functionName: getStockOverview
+  appSync: ${file(./appsync-conf.yml)}
   appsync-simulator:
     apiKey: 'da2-fakeApiId123456'
 	
@@ -65,8 +38,12 @@ functions:
     handler: src/stock_overview.handle_request
     layers:
       - Ref: PythonRequirementsLambdaLayer
+      - ${self:custom.pandasLambdaLayerMap.${aws:region}}
   search:
     handler: src/search.handle_request
+    layers:
+      - Ref: PythonRequirementsLambdaLayer
+      - ${self:custom.pandasLambdaLayerMap.${aws:region}}
 
 resources:
   Resources:

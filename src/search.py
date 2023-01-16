@@ -1,7 +1,6 @@
 import os
-from urllib.parse import urlencode
-import requests
 
+from alpha_vantage.timeseries import TimeSeries
 
 if os.environ.get("IS_OFFLINE") == "true" and os.environ.get("LOCAL_DEBUG") == "true":
     import debugpy
@@ -11,25 +10,19 @@ if os.environ.get("IS_OFFLINE") == "true" and os.environ.get("LOCAL_DEBUG") == "
 
 
 def handle_request(event, context):
-    params = {
-        "function": "SYMBOL_SEARCH",
-        "apikey": os.environ.get("ALPHAVANTAGE_API_KEY"),
-        "keywords": event["arguments"]["searchText"],
-    }
-    url = f"https://www.alphavantage.co/query?{urlencode(params)}"
-    r = requests.get(url)
-    data = r.json()
+    result = TimeSeries(key=os.environ.get("ALPHAVANTAGE_API_KEY")).get_symbol_search(
+        keywords=event["arguments"]["searchText"]
+    )
 
     search_results = []
-    for item in data.get("bestMatches", []):
+    for _, row in result[0].iterrows():
         search_results.append(
             {
-                "symbol": item["1. symbol"],
-                "name": item["2. name"],
-                "type": item["3. type"],
-                "region": item["4. region"],
-                "currency": item["8. currency"],
+                "symbol": row["1. symbol"],
+                "name": row["2. name"],
+                "type": row["3. type"],
+                "region": row["4. region"],
+                "currency": row["8. currency"],
             }
         )
-
     return search_results

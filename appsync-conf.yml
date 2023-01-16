@@ -1,0 +1,29 @@
+name: ${self:service}-${sls:stage}
+authenticationType: API_KEY
+apiKeys:
+  - name: ui keys
+    expiresAfter: 365d
+additionalAuthenticationProviders:
+  - authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      userPoolId: !Ref CognitoUserPool
+mappingTemplates:
+  - type: Query
+    field: search
+    dataSource: search
+    request: false
+    response: false
+  - type: Query
+    field: getStockOverview
+    dataSource: getStockOverview
+    request: false
+    response: false
+dataSources:
+  - type: AWS_LAMBDA
+    name: search
+    config:
+      functionName: search
+  - type: AWS_LAMBDA
+    name: getStockOverview
+    config:
+      functionName: getStockOverview
