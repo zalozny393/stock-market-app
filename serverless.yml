@@ -35,12 +35,12 @@ package:
 
 functions:
   getStockOverview:
-    handler: src/stock_overview.handle_request
+    handler: src/handlers/stock_overview.handle_request
     layers:
       - Ref: PythonRequirementsLambdaLayer
       - ${self:custom.pandasLambdaLayerMap.${aws:region}}
   search:
-    handler: src/search.handle_request
+    handler: src/handlers/search.handle_request
     layers:
       - Ref: PythonRequirementsLambdaLayer
       - ${self:custom.pandasLambdaLayerMap.${aws:region}}

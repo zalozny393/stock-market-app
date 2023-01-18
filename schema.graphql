@@ -29,4 +29,5 @@ type StockOverview @aws_cognito_user_pools @aws_api_key{
     High52Week: Float!
     Low52Week: Float!
     Moving200DayAverage: Float!
+    dividendYield: Float!
 }
