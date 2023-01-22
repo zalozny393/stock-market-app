@@ -4,6 +4,8 @@ import os
 from alpha_vantage.fundamentaldata import FundamentalData
 from alpha_vantage.timeseries import TimeSeries
 
+from src.models import CompanyOverviewModel
+
 log = logging.getLogger(__name__)
 
 
@@ -23,7 +25,7 @@ class AlphaVantageService:
 
         self._time_series = TimeSeries(key=os.environ.get("ALPHAVANTAGE_API_KEY"))
 
-    def get_company_overview(self, symbol: str) -> dict:
+    def get_company_overview(self, symbol: str) -> CompanyOverviewModel:
         if not symbol:
             log.error("Symbol is not provided")
             raise AlphaVantageInputErrorException("Symbol is not provided")
@@ -33,7 +35,22 @@ class AlphaVantageService:
             log.error("Failed to get Company overview", e)
             raise AlphaVantageException(e)
 
-        return data
+        return CompanyOverviewModel.load(
+            {
+                "symbol": data["Symbol"],
+                "name": data["Name"],
+                "description": data["Description"],
+                "currency": data["Currency"],
+                "sector": data["Sector"],
+                "PERatio": data["PERatio"],
+                "profitMargin": data["ProfitMargin"],
+                "high52Week": data["52WeekHigh"],
+                "low52Week": data["52WeekLow"],
+                "moving200DayAverage": data["200DayMovingAverage"],
+                "beta": data["Beta"],
+                "dividendYield": data["DividendYield"],
+            }
+        )
 
     def search_symbol(self, search_text: str) -> dict:
         try:

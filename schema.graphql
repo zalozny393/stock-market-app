@@ -26,8 +26,8 @@ type StockOverview @aws_cognito_user_pools @aws_api_key{
     sector: String!
     PERatio: Float!
     profitMargin: Float!
-    High52Week: Float!
-    Low52Week: Float!
-    Moving200DayAverage: Float!
+    high52Week: Float!
+    low52Week: Float!
+    moving200DayAverage: Float!
     dividendYield: Float!
 }

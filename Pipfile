@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 alpha-vantage = "*"
+marshmallow = "*"
+marshmallow-dataclass = "*"
 
 [dev-packages]
 black = "*"
