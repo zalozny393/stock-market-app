@@ -49,3 +49,12 @@ class CompanyOverviewModel(BaseModel):
     moving_200_day_average: float = field()
     beta: float = field()
     dividend_yield: float = field()
+
+
+@dataclass
+class SearchResultswModel(BaseModel):
+    symbol: str = field()
+    name: str = field()
+    type: str = field()
+    region: str = field()
+    currency: str = field()

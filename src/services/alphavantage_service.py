@@ -1,10 +1,11 @@
 import logging
 import os
+from typing import Iterable
 
 from alpha_vantage.fundamentaldata import FundamentalData
 from alpha_vantage.timeseries import TimeSeries
 
-from src.models import CompanyOverviewModel
+from src.models import CompanyOverviewModel, SearchResultswModel
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +53,7 @@ class AlphaVantageService:
             }
         )
 
-    def search_symbol(self, search_text: str) -> dict:
+    def search_symbol(self, search_text: str) -> Iterable[SearchResultswModel]:
         try:
             findings, meta_data = self._time_series.get_symbol_search(
                 keywords=search_text
@@ -64,13 +65,15 @@ class AlphaVantageService:
         search_results = []
         for _, row in findings.iterrows():
             search_results.append(
-                {
-                    "symbol": row["1. symbol"],
-                    "name": row["2. name"],
-                    "type": row["3. type"],
-                    "region": row["4. region"],
-                    "currency": row["8. currency"],
-                }
+                SearchResultswModel.load(
+                    {
+                        "symbol": row["1. symbol"],
+                        "name": row["2. name"],
+                        "type": row["3. type"],
+                        "region": row["4. region"],
+                        "currency": row["8. currency"],
+                    }
+                )
             )
 
         return search_results
