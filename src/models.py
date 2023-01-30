@@ -1,60 +1,38 @@
-from abc import ABC
-from dataclasses import dataclass, field
+import abc
 
-import marshmallow_dataclass
-from marshmallow import Schema
+from pydantic import BaseModel as PydanticBaseModel
+from pydantic import Field
 
 
-def camelcase(s):
-    parts = iter(s.split("_"))
+def to_camel(string: str) -> str:
+    parts = iter(string.split("_"))
     return next(parts) + "".join(i.title() for i in parts)
 
 
-class BaseSchema(Schema):
-    """Schema that uses camel-case for its external representation
-    and snake-case for its internal representation.
-    """
-
-    def on_bind_field(self, field_name, field_obj):
-        field_obj.data_key = (
-            field_obj.data_key if field_obj.data_key else camelcase(field_name)
-        )
+class BaseModel(PydanticBaseModel, metaclass=abc.ABCMeta):
+    class Config:
+        alias_generator = to_camel
+        allow_population_by_field_name = True
 
 
-class BaseModel(ABC):
-    @classmethod
-    def get_schema(cls):
-        return marshmallow_dataclass.class_schema(cls, base_schema=BaseSchema)()
-
-    @classmethod
-    def load(cls, data: dict):
-        return cls.get_schema().load(data)
-
-    @classmethod
-    def dump(cls, data: dict):
-        return cls.get_schema().dump(data)
-
-
-@dataclass
 class CompanyOverviewModel(BaseModel):
-    symbol: str = field()
-    name: str = field()
-    description: str = field()
-    currency: str = field()
-    sector: str = field()
-    pe_ratio: float = field(metadata={"data_key": "PERatio"})
-    profit_margin: float = field()
-    high_52_week: float = field()
-    low_52_week: float = field()
-    moving_200_day_average: float = field()
-    beta: float = field()
-    dividend_yield: float = field()
+    symbol: str
+    name: str
+    description: str
+    currency: str
+    sector: str
+    pe_ratio: float = Field(alias="PERatio")
+    profit_margin: float
+    high_52_week: float
+    low_52_week: float
+    moving_200_day_average: float
+    beta: float
+    dividend_yield: float
 
 
-@dataclass
 class SearchResultswModel(BaseModel):
-    symbol: str = field()
-    name: str = field()
-    type: str = field()
-    region: str = field()
-    currency: str = field()
+    symbol: str
+    name: str
+    type: str
+    region: str
+    currency: str

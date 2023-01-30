@@ -5,13 +5,14 @@ name = "pypi"
 
 [packages]
 alpha-vantage = "*"
-marshmallow = "*"
-marshmallow-dataclass = "*"
+pydantic = "*"
 
 [dev-packages]
 black = "*"
 debugpy = "*"
 pandas = "*"
+pytest = "*"
+pytest-mock = "*"
 
 [requires]
 python_version = "3.9"

@@ -10,6 +10,27 @@ from src.models import CompanyOverviewModel, SearchResultswModel
 log = logging.getLogger(__name__)
 
 
+ALPHA_VANTAGE_SYMBOL = "Symbol"
+ALPHA_VANTAGE_NAME = "Name"
+ALPHA_VANTAGE_DESCRIPTION = "Description"
+ALPHA_VANTAGE_CURRENCY = "Currency"
+ALPHA_VANTAGE_SECTOR = "Sector"
+ALPHA_VANTAGE_PE_RATIO = "PERatio"
+ALPHA_VANTAGE_PROFIT_MARGIN = "ProfitMargin"
+ALPHA_VANTAGE_52_WEEK_HIGH = "52WeekHigh"
+ALPHA_VANTAGE_52_WEEK_LOW = "52WeekLow"
+ALPHA_VANTAGE_200_DAY_MOVING_AVERAGE = "200DayMovingAverage"
+ALPHA_VANTAGE_BETA = "Beta"
+ALPHA_VANTAGE_DIVIDEND_YIELD = "DividendYield"
+
+
+ALPHA_VANTAGE_SEARCH_RESULT_SYMBOL = "1. symbol"
+ALPHA_VANTAGE_SEARCH_RESULT_NAME = "2. name"
+ALPHA_VANTAGE_SEARCH_RESULT_TYPE = "3. type"
+ALPHA_VANTAGE_SEARCH_RESULT_REGION = "4. region"
+ALPHA_VANTAGE_SEARCH_RESULT_CURENCY = "8. currency"
+
+
 class AlphaVantageException(Exception):
     pass
 
@@ -36,21 +57,19 @@ class AlphaVantageService:
             log.error("Failed to get Company overview", e)
             raise AlphaVantageException(e)
 
-        return CompanyOverviewModel.load(
-            {
-                "symbol": data["Symbol"],
-                "name": data["Name"],
-                "description": data["Description"],
-                "currency": data["Currency"],
-                "sector": data["Sector"],
-                "PERatio": data["PERatio"],
-                "profitMargin": data["ProfitMargin"],
-                "high52Week": data["52WeekHigh"],
-                "low52Week": data["52WeekLow"],
-                "moving200DayAverage": data["200DayMovingAverage"],
-                "beta": data["Beta"],
-                "dividendYield": data["DividendYield"],
-            }
+        return CompanyOverviewModel(
+            symbol=data[ALPHA_VANTAGE_SYMBOL],
+            name=data[ALPHA_VANTAGE_NAME],
+            description=data[ALPHA_VANTAGE_DESCRIPTION],
+            currency=data[ALPHA_VANTAGE_CURRENCY],
+            sector=data[ALPHA_VANTAGE_SECTOR],
+            pe_ratio=data[ALPHA_VANTAGE_PE_RATIO],
+            profit_margin=data[ALPHA_VANTAGE_PROFIT_MARGIN],
+            high_52_week=data[ALPHA_VANTAGE_52_WEEK_HIGH],
+            low_52_week=data[ALPHA_VANTAGE_52_WEEK_LOW],
+            moving_200_day_average=data[ALPHA_VANTAGE_200_DAY_MOVING_AVERAGE],
+            beta=data[ALPHA_VANTAGE_BETA],
+            dividend_yield=data[ALPHA_VANTAGE_DIVIDEND_YIELD],
         )
 
     def search_symbol(self, search_text: str) -> Iterable[SearchResultswModel]:
@@ -64,15 +83,14 @@ class AlphaVantageService:
 
         search_results = []
         for _, row in findings.iterrows():
+
             search_results.append(
-                SearchResultswModel.load(
-                    {
-                        "symbol": row["1. symbol"],
-                        "name": row["2. name"],
-                        "type": row["3. type"],
-                        "region": row["4. region"],
-                        "currency": row["8. currency"],
-                    }
+                SearchResultswModel(
+                    symbol=row[ALPHA_VANTAGE_SEARCH_RESULT_SYMBOL],
+                    name=row[ALPHA_VANTAGE_SEARCH_RESULT_NAME],
+                    type=row[ALPHA_VANTAGE_SEARCH_RESULT_TYPE],
+                    region=row[ALPHA_VANTAGE_SEARCH_RESULT_REGION],
+                    currency=row[ALPHA_VANTAGE_SEARCH_RESULT_CURENCY],
                 )
             )
 
