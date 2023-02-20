@@ -46,15 +46,4 @@ functions:
       - ${self:custom.pandasLambdaLayerMap.${aws:region}}
 
 resources:
-  Resources:
-    CognitoUserPool:
-      Type: "AWS::Cognito::UserPool"
-      Properties:
-        UsernameAttributes:
-          - "email"
-        UserPoolName: ${self:service}-${sls:stage}
-    CognitoUserPoolClient:
-      Type: "AWS::Cognito::UserPoolClient"
-      Properties:
-        ClientName: "web"
-        UserPoolId: !Ref CognitoUserPool
+  Resources: ${file(./resources.yml)}

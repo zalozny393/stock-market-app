@@ -1,0 +1,44 @@
+CognitoUserPool:
+  Type: AWS::Cognito::UserPool
+  Properties:
+    UsernameAttributes:
+      - "email"
+    UserPoolName: ${self:service}-${sls:stage}
+CognitoUserPoolClient:
+  Type: AWS::Cognito::UserPoolClient
+  Properties:
+    ClientName: ${self:service}-${sls:stage}
+    UserPoolId: !Ref CognitoUserPool
+    AllowedOAuthFlowsUserPoolClient: true
+    AccessTokenValidity: 24  # hours
+    IdTokenValidity: 24  # hours
+    SupportedIdentityProviders: 
+      - Google
+      - COGNITO
+    CallbackURLs:
+      - ${env:COGNITO_USER_POOL_CALLBACK_URL}
+    LogoutURLs: 
+      - ${env:COGNITO_USER_POOL_LOGOUT_URL}
+    AllowedOAuthFlows: 
+      - implicit
+    AllowedOAuthScopes: 
+      - phone
+      - email
+      - openid
+CognitoUserPoolDomain:
+  Type: AWS::Cognito::UserPoolDomain
+  Properties: 
+    Domain: ${self:service}-${sls:stage}
+    UserPoolId: !Ref CognitoUserPool     
+UserPoolIdentityProvider:
+  Type: AWS::Cognito::UserPoolIdentityProvider
+  Properties:
+    ProviderName: Google
+    ProviderType: Google
+    UserPoolId: !Ref CognitoUserPool
+    ProviderDetails:
+      client_id: ${env:GOOGLE_CLIENT_ID}
+      client_secret: ${env:GOOGLE_CLIENT_SECRET}
+      authorize_scopes: profile email openid
+    AttributeMapping:
+      email: email
