@@ -4,6 +4,8 @@ CognitoUserPool:
     UsernameAttributes:
       - "email"
     UserPoolName: ${self:service}-${sls:stage}
+    AutoVerifiedAttributes:
+      - email
 CognitoUserPoolClient:
   Type: AWS::Cognito::UserPoolClient
   Properties:
