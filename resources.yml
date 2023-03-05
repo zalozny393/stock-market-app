@@ -1,3 +1,34 @@
+AppSyncUrlSSMParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${sls:stage}/${self:service}/app-sync-api-url
+    Type: String
+    Value: !GetAtt GraphQlApi.GraphQLUrl
+AppSyncApiKeySSMParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${sls:stage}/${self:service}/app-sync-api-key
+    Type: String
+    Value: !GetAtt GraphQlApiKeykey.ApiKey
+CognitoUserPoolUrlSSMParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${sls:stage}/${self:service}/cognito-user-pool-url
+    Type: String
+    Value:
+      #/login?client_id=6bv8vp08h8rgcd7h1ersogdae&response_type=token&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fwww.canada.ca
+      !Join [
+        "",
+        [
+          "https://",
+          !Ref CognitoUserPoolDomain,
+          ".auth.${aws:region}.amazoncognito.com",
+          "/login?client_id=",
+          !Ref CognitoUserPoolClient,
+          "&response_type=token&scope=email+openid+phone&redirect_uri=",
+          "${env:COGNITO_USER_POOL_CALLBACK_URL}",
+        ],
+      ]
 CognitoUserPool:
   Type: AWS::Cognito::UserPool
   Properties:
@@ -12,26 +43,26 @@ CognitoUserPoolClient:
     ClientName: ${self:service}-${sls:stage}
     UserPoolId: !Ref CognitoUserPool
     AllowedOAuthFlowsUserPoolClient: true
-    AccessTokenValidity: 24  # hours
-    IdTokenValidity: 24  # hours
-    SupportedIdentityProviders: 
+    AccessTokenValidity: 24 # hours
+    IdTokenValidity: 24 # hours
+    SupportedIdentityProviders:
       - Google
       - COGNITO
     CallbackURLs:
       - ${env:COGNITO_USER_POOL_CALLBACK_URL}
-    LogoutURLs: 
+    LogoutURLs:
       - ${env:COGNITO_USER_POOL_LOGOUT_URL}
-    AllowedOAuthFlows: 
+    AllowedOAuthFlows:
       - implicit
-    AllowedOAuthScopes: 
+    AllowedOAuthScopes:
       - phone
       - email
       - openid
 CognitoUserPoolDomain:
   Type: AWS::Cognito::UserPoolDomain
-  Properties: 
+  Properties:
     Domain: ${self:service}-${sls:stage}
-    UserPoolId: !Ref CognitoUserPool     
+    UserPoolId: !Ref CognitoUserPool
 UserPoolIdentityProvider:
   Type: AWS::Cognito::UserPoolIdentityProvider
   Properties:

@@ -1,7 +1,7 @@
 name: ${self:service}-${sls:stage}
 authenticationType: API_KEY
 apiKeys:
-  - name: ui keys
+  - name: key
     expiresAfter: 365d
 additionalAuthenticationProviders:
   - authenticationType: AMAZON_COGNITO_USER_POOLS

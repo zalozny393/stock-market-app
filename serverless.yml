@@ -1,5 +1,5 @@
 service: stock-market-app
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 plugins:
   - serverless-appsync-plugin
@@ -25,13 +25,13 @@ custom:
     layer: true
   appSync: ${file(./appsync-conf.yml)}
   appsync-simulator:
-    apiKey: 'da2-fakeApiId123456'
-	
+    apiKey: "da2-fakeApiId123456"
+
 package:
   individually: false
   patterns:
-    - '!**'
-    - './src/**'
+    - "!**"
+    - "./src/**"
 
 functions:
   getStockOverview:
